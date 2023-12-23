@@ -6,7 +6,4 @@ WORKDIR /project
 COPY requirements.txt /project/requirements.txt
 RUN pip install -r requirements.txt
 COPY . /project/
-RUN chmod +x /project/scripts_airflow/init.sh
-# ENTRYPOINT [ "/project/scripts_airflow/init.sh" ]
-
 CMD airflow scheduler & airflow webserver

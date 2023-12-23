@@ -50,6 +50,25 @@ services:
       - ./datafiles:/datafiles
       - C:/Users/Hp/.dbt:/root/.dbt
 
+# Redash service
+  redash:
+    image: redash/redash:latest
+    container_name: redash
+    restart: always
+    ports:
+      - "5000:5000"
+   
+    depends_on:
+      - postgres-dbt
+    links:
+      - postgres-dbt
+    environment:
+      - REDASH_WEB_WORKERS=4
+      - REDASH_DATABASE_URL=postgresql://dbtuser:pssd@postgres-dbt:5432/dbtdb
+      - REDIS_URL=redis://redis:6379/0
+  redis:
+    image: redis:latest
+
   adminer:
     image: adminer
     restart: always

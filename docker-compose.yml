@@ -1,19 +1,6 @@
 version: '3.10'
 
 services:
-  postgres:
-    image: postgres
-    environment:
-      POSTGRES_PASSWORD: pssd
-      POSTGRES_USER: airflowuser
-      POSTGRES_DB: airflowdb
-      AIRFLOW_SCHEMA: airflow
-    expose:
-      - "5432"
-    restart: always
-    volumes:
-      - ./scripts_postgres:/docker-entrypoint-initdb.d
-
   postgres-dbt:
     image: postgres
     environment:
@@ -23,7 +10,9 @@ services:
       DBT_SCHEMA: dbt
       DBT_RAW_DATA_SCHEMA: dbt_raw_data
     expose:
-      - "5432"
+      - "5433"
+    ports:
+      - "5433:5432"
     restart: always
     volumes:
       - ./sample_data:/sample_data
@@ -39,11 +28,11 @@ services:
       AIRFLOW__CORE__PARALLELISM: 4
       AIRFLOW__CORE__DAG_CONCURRENCY: 4
       AIRFLOW__CORE__MAX_ACTIVE_RUNS_PER_DAG: 4
-      POSTGRES_USER: airflowuser
+      POSTGRES_USER: dbtuser
       POSTGRES_PASSWORD: pssd
-      POSTGRES_HOST: postgres
+      POSTGRES_HOST: postgres-dbt
       POSTGRES_PORT: 5432
-      POSTGRES_DB: airflowdb
+      POSTGRES_DB: dbtdb
       DBT_POSTGRES_PASSWORD: pssd
       DBT_POSTGRES_USER: dbtuser
       DBT_POSTGRES_DB: dbtdb
@@ -51,7 +40,6 @@ services:
       DBT_DBT_RAW_DATA_SCHEMA: dbt_raw_data
       DBT_POSTGRES_HOST: postgres-dbt
     depends_on:
-      - postgres
       - postgres-dbt
     ports:
       - "8080:8080"
@@ -60,6 +48,7 @@ services:
       - ./airflow:/airflow
       - ./python:/python
       - ./datafiles:/datafiles
+      - C:/Users/Hp/.dbt:/root/.dbt
 
   adminer:
     image: adminer
@@ -67,5 +56,4 @@ services:
     ports:
       - "8090:8080"
     depends_on:
-      - postgres
       - postgres-dbt

@@ -1,17 +1,6 @@
 
 
 
-
-## Steps for dbt:
-
- Set up a dbt project using `dbt init`.
- Configure database connection in `profiles.yml`.
- Define models in the `models` directory.
- Run dbt models using `dbt run`.
- Generate documentation with `dbt docs generate`.
- Share documentation on [dbt Cloud](https://cloud.getdbt.com/).
- Capture a screenshot of the data view and place it in the "screenshots" folder.
-
 # Data warehouse tech stack with Postgresql, DBT, Airflow
 
 ## Introduction
@@ -32,11 +21,41 @@ tech-stack that will help us provide the AI service to the client.
 
     Understanding the dataset posed a challenge as it lacked detailed descriptions for effective data manipulation and transformation. and the project faced issues due to the dataset's lack of clarity. Additionally, when running Redash, the creation of multiple containers significantly slowed down my PC, eventually causing it to stack up numerous times.
 
-## References
-
 
 ## Screenshots:
 
-![schedule](https://drive.google.com/file/d/1LZ_LVsXeaay3d5xPiec-EeuRVa2vdkf0/view?usp=sharing)
+[schedule](https://drive.google.com/file/d/1LZ_LVsXeaay3d5xPiec-EeuRVa2vdkf0/view?usp=sharing)
+[dbt](https://drive.google.com/file/d/18nZ9B6Ndf8Yhy5IuCJAvQz7GqTq_Leyr/view?usp=sharing)
 
 ## Documentation:
+
+clone the project 
+```
+git clone https://github.com/merronmuche/dbt_airflow
+```
+then create a virtual environment
+```virtualenv venv
+source venv/bin/activate
+```
+then run the requirements
+
+```
+pip install -r requirements.txt
+
+run docker compose 
+```
+docker compose up
+
+## Steps for dbt:
+
+ Set up a dbt project using `dbt init`.
+ Configure database connection in `profiles.yml`.
+ Define models in the `models` directory.
+ Run dbt models using `dbt run`.
+ Generate documentation with `dbt docs generate`.
+ Share documentation on [dbt Cloud](https://cloud.getdbt.com/).
+ Capture a screenshot of the data view and place it in the "screenshots" folder.
+
+ ## References
+ 'https://docs.getdbt.com/docs/collaborate/documentation'
+ 'https://airflow.apache.org/docs/'

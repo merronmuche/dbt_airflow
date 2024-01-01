@@ -1,14 +1,48 @@
-version: '3.10'
+version: "2"
+x-redash-service: &redash-service
+  image: redash/redash:8.0.0.b32245
+  depends_on:
+    - postgres-dbt
+    - redis
+  env_file: .env
+  restart: always
 
 services:
-  postgres-dbt:
-    image: postgres
+  server:
+    <<: *redash-service
+    command: server
+    ports:
+      - "5000:5000"
     environment:
-      POSTGRES_PASSWORD: pssd
-      POSTGRES_USER: dbtuser
-      POSTGRES_DB: dbtdb
-      DBT_SCHEMA: dbt
-      DBT_RAW_DATA_SCHEMA: dbt_raw_data
+      REDASH_WEB_WORKERS: 4
+  scheduler:
+    <<: *redash-service
+    command: scheduler
+    environment:
+      QUEUES: "celery"
+      WORKERS_COUNT: 1
+  scheduled_worker:
+    <<: *redash-service
+    command: worker
+    environment:
+      QUEUES: "scheduled_queries,schemas"
+      WORKERS_COUNT: 1
+  adhoc_worker:
+    <<: *redash-service
+    command: worker
+    environment:
+      QUEUES: "queries"
+      WORKERS_COUNT: 2
+  redis:
+    image: redis:5.0-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+
+  postgres-dbt:
+    image: postgres:9.6-alpine
+    env_file:
+      - .env
     expose:
       - "5433"
     ports:
@@ -48,31 +82,5 @@ services:
       - ./airflow:/airflow
       - ./python:/python
       - ./datafiles:/datafiles
-      - C:/Users/Hp/.dbt:/root/.dbt
+      # - C:/Users/Hp/.dbt:/root/.dbt
 
-# Redash service
-  redash:
-    image: redash/redash:latest
-    container_name: redash
-    restart: always
-    ports:
-      - "5000:5000"
-   
-    depends_on:
-      - postgres-dbt
-    links:
-      - postgres-dbt
-    environment:
-      - REDASH_WEB_WORKERS=4
-      - REDASH_DATABASE_URL=postgresql://dbtuser:pssd@postgres-dbt:5432/dbtdb
-      - REDIS_URL=redis://redis:6379/0
-  redis:
-    image: redis:latest
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - "8090:8080"
-    depends_on:
-      - postgres-dbt

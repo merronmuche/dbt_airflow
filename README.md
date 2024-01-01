@@ -59,3 +59,56 @@ docker compose up
  ## References
  'https://docs.getdbt.com/docs/collaborate/documentation'
  'https://airflow.apache.org/docs/'
+
+
+# How to run the app
+## run airflow
+
+First create user using the following command
+
+```bash
+airflow users create \
+    --username [your_username] \
+    --firstname [Your First Name] \
+    --lastname [Your Last Name] \
+    --role Admin \
+    --email [your-email@example.com] \
+    --password [your_password]
+```
+
+Then, run the following command
+```bash
+airflow db init```
+
+Then, go to localhost:8080 and login with the above credentials.
+
+
+
+##  Redash
+
+### Step 1: Create a `.env` File
+- Copy the `.env.sample` file.
+- Modify the values in the copied file to suit your local environment.
+- Save it as `.env`.
+
+### Step 2: Create the Database
+Run the following command to create the database:
+\```bash
+docker-compose run --rm redash-server create_db
+\```
+
+### Step 3: Build and Run Docker Compose
+Build and run the Redash services using the following command:
+\```bash
+docker-compose up --build
+\```
+
+### Step 4: Access Redash
+- Open your web browser.
+- Navigate to `localhost:5000`.
+
+### Reference
+For more detailed configuration, refer to the official Redash Docker Compose file:
+[Redash Docker Compose File on GitHub](https://github.com/getredash/setup/blob/master/data/docker-compose.yml)
+
+
